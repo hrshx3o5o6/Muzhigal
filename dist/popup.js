@@ -8,7 +8,7 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 document.addEventListener('DOMContentLoaded', function () {
   console.log('Spotify Client ID:', "67dab6c61a8740fab3d446243cd3b8b5");
-  console.log('YouTube Client ID:', "294309007388-rad2uc19ctupl6jtqtavh89rmicil2ti.apps.googleusercontent.com");
+  console.log('YouTube Client ID:', "294309007388-poqnpffdamrndbl85kkbhegrnti3ohci.apps.googleusercontent.com");
   // Auth elements
   var spotifyAuthBtn = document.getElementById('spotify-auth');
   var youtubeAuthBtn = document.getElementById('youtube-auth');
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
           case 0:
             _context3.prev = 0;
             console.log('Starting YouTube auth...');
-            clientId = "294309007388-rad2uc19ctupl6jtqtavh89rmicil2ti.apps.googleusercontent.com";
+            clientId = "294309007388-poqnpffdamrndbl85kkbhegrnti3ohci.apps.googleusercontent.com";
             redirectUri = chrome.identity.getRedirectURL();
             console.log('Debug Info:', {
               clientId: clientId,
