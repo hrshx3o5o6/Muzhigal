@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music Link Converter</title>
+    <style>
+        body {
+            width: 400px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #auth-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #converter-container {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #song-link {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .result-container {
+            display: none;
+            margin-top: 10px;
+        }
+        .result-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        #converted-link {
+            flex-grow: 1;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        button {
+            padding: 8px 16px;
+            background: #1db954;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1ed760;
+        }
+        .auth-status {
+            font-size: 12px;
+            color: #666;
+        }
+        .connected {
+            color: #1db954;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="auth-container">
+            <div>
+                <button id="spotify-auth">Connect Spotify</button>
+                <span id="spotify-status" class="auth-status">Not connected</span>
+            </div>
+            <div>
+                <button id="youtube-auth">Connect YouTube</button>
+                <span id="youtube-status" class="auth-status">Not connected</span>
+            </div>
+        </div>
+        
+        <div id="converter-container">
+            <input type="text" id="song-link" placeholder="Paste Spotify or YouTube Music link here">
+            <button id="convert-link">Convert Link</button>
+            <div class="result-container" id="result-container">
+                <div class="result-row">
+                    <div id="converted-link"></div>
+                    <button id="copy-link">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
