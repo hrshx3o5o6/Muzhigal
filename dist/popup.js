@@ -8,7 +8,7 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 document.addEventListener('DOMContentLoaded', function () {
   console.log('Spotify Client ID:', "67dab6c61a8740fab3d446243cd3b8b5");
-  console.log('YouTube Client ID:', "294309007388-ukipjfkqt10in70cl4lva8q7503fe2jf.apps.googleusercontent.com");
+  console.log('YouTube Client ID:', "294309007388-rad2uc19ctupl6jtqtavh89rmicil2ti.apps.googleusercontent.com");
   // Auth elements
   var spotifyAuthBtn = document.getElementById('spotify-auth');
   var youtubeAuthBtn = document.getElementById('youtube-auth');
@@ -157,63 +157,66 @@ document.addEventListener('DOMContentLoaded', function () {
           case 0:
             _context3.prev = 0;
             console.log('Starting YouTube auth...');
-            clientId = "294309007388-ukipjfkqt10in70cl4lva8q7503fe2jf.apps.googleusercontent.com";
+            clientId = "294309007388-rad2uc19ctupl6jtqtavh89rmicil2ti.apps.googleusercontent.com";
             redirectUri = chrome.identity.getRedirectURL();
-            console.log('YouTube Client ID:', clientId);
-            console.log('Redirect URI:', redirectUri);
+            console.log('Debug Info:', {
+              clientId: clientId,
+              redirectUri: redirectUri,
+              extensionId: chrome.runtime.id
+            });
             YOUTUBE_SCOPES = ['https://www.googleapis.com/auth/youtube.readonly'].join(' ');
             authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
             authUrl.searchParams.append('client_id', clientId);
             authUrl.searchParams.append('response_type', 'token');
             authUrl.searchParams.append('redirect_uri', redirectUri);
             authUrl.searchParams.append('scope', YOUTUBE_SCOPES);
-            console.log('Auth URL:', authUrl.toString());
-            _context3.next = 15;
+            console.log('Full Auth URL:', authUrl.toString());
+            _context3.next = 14;
             return chrome.identity.launchWebAuthFlow({
               url: authUrl.toString(),
               interactive: true
             });
-          case 15:
+          case 14:
             responseUrl = _context3.sent;
             console.log('Response URL:', responseUrl);
             if (!responseUrl) {
-              _context3.next = 30;
+              _context3.next = 29;
               break;
             }
             hashParams = new URLSearchParams(new URL(responseUrl).hash.substr(1));
             accessToken = hashParams.get('access_token');
             if (!accessToken) {
-              _context3.next = 29;
+              _context3.next = 28;
               break;
             }
-            _context3.next = 23;
+            _context3.next = 22;
             return chrome.storage.local.set({
               youtubeToken: accessToken
             });
-          case 23:
+          case 22:
             youtubeStatus.textContent = 'Connected';
             youtubeStatus.classList.add('connected');
             youtubeAuthBtn.style.display = 'none';
             console.log('Successfully authenticated with YouTube');
-            _context3.next = 30;
+            _context3.next = 29;
             break;
-          case 29:
+          case 28:
             throw new Error('No access token received');
-          case 30:
-            _context3.next = 38;
+          case 29:
+            _context3.next = 37;
             break;
-          case 32:
-            _context3.prev = 32;
+          case 31:
+            _context3.prev = 31;
             _context3.t0 = _context3["catch"](0);
             console.error('YouTube auth error:', _context3.t0);
             console.error('Error stack:', _context3.t0.stack);
             youtubeStatus.textContent = 'Authentication failed';
             youtubeStatus.style.color = 'red';
-          case 38:
+          case 37:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[0, 32]]);
+      }, _callee3, null, [[0, 31]]);
     }));
     return _initiateYoutubeAuth.apply(this, arguments);
   }

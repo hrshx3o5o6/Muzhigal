@@ -108,8 +108,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const clientId = process.env.YOUTUBE_API_CLIENT_ID;
             const redirectUri = chrome.identity.getRedirectURL();
             
-            console.log('YouTube Client ID:', clientId);
-            console.log('Redirect URI:', redirectUri);
+            console.log('Debug Info:', {
+                clientId: clientId,
+                redirectUri: redirectUri,
+                extensionId: chrome.runtime.id
+            });
 
             const YOUTUBE_SCOPES = [
                 'https://www.googleapis.com/auth/youtube.readonly'
@@ -121,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
             authUrl.searchParams.append('redirect_uri', redirectUri);
             authUrl.searchParams.append('scope', YOUTUBE_SCOPES);
 
-            console.log('Auth URL:', authUrl.toString());
+            console.log('Full Auth URL:', authUrl.toString());
 
             const responseUrl = await chrome.identity.launchWebAuthFlow({
                 url: authUrl.toString(),
