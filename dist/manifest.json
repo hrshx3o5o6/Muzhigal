@@ -6,12 +6,17 @@
     "permissions": [
         "storage",
         "identity",
-        "clipboardWrite"
+        "clipboardWrite",
+        "scripting",
+        "activeTab"
     ],
     "host_permissions": [
         "https://accounts.spotify.com/*",
         "https://api.spotify.com/*",
-        "https://www.googleapis.com/youtube/v3/*"
+        "https://accounts.google.com/*",
+        "https://www.googleapis.com/*",
+        "https://music.youtube.com/*",
+        "https://open.spotify.com/*"
     ],
     "action": {
         "default_popup": "popup.html",
@@ -25,12 +30,14 @@
         "service_worker": "background.js",
         "type": "module"
     },
-    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3QU5",
     "oauth2": {
         "client_id": "67dab6c61a8740fab3d446243cd3b8b5",
         "scopes": [
             "playlist-read-private",
             "user-library-read"
         ]
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
     }
 }

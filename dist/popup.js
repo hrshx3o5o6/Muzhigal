@@ -12,10 +12,9 @@ var converterSection = document.getElementById('converter-section');
 var errorSection = document.getElementById('error-section');
 var errorMessage = document.getElementById('error-message');
 var spotifyConnectButton = document.getElementById('spotify-connect');
-var youtubeKeyInput = document.getElementById('youtube-key');
+var youtubeConnectButton = document.getElementById('youtube-connect');
 var spotifyStatus = document.getElementById('spotify-status');
 var youtubeStatus = document.getElementById('youtube-status');
-var saveKeysButton = document.getElementById('save-keys');
 var songLinkInput = document.getElementById('song-link');
 var convertButton = document.getElementById('convert-button');
 var resultSection = document.getElementById('result-section');
@@ -26,7 +25,71 @@ var copyButton = document.getElementById('copy-button');
 var isSpotifyConnected = false;
 var isYoutubeConnected = false;
 
-// Spotify Auth
+// YouTube Auth
+function authenticateYouTube() {
+  return _authenticateYouTube.apply(this, arguments);
+} // Spotify Auth
+function _authenticateYouTube() {
+  _authenticateYouTube = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+    var redirectUri, clientId, scopes, authUrl, responseUrl, hashParams, accessToken;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          redirectUri = chrome.identity.getRedirectURL();
+          console.log('Your redirect URI:', redirectUri);
+          clientId = '294309007388-poqnpffdamrndbl85kkbhegrnti3ohci.apps.googleusercontent.com';
+          scopes = ['https://www.googleapis.com/auth/youtube.readonly'];
+          authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+          authUrl.searchParams.append('client_id', clientId);
+          authUrl.searchParams.append('response_type', 'token');
+          authUrl.searchParams.append('redirect_uri', redirectUri);
+          authUrl.searchParams.append('scope', scopes.join(' '));
+          _context3.next = 12;
+          return chrome.identity.launchWebAuthFlow({
+            url: authUrl.toString(),
+            interactive: true
+          });
+        case 12:
+          responseUrl = _context3.sent;
+          if (!responseUrl) {
+            _context3.next = 25;
+            break;
+          }
+          hashParams = new URLSearchParams(new URL(responseUrl).hash.substr(1));
+          accessToken = hashParams.get('access_token');
+          if (!accessToken) {
+            _context3.next = 24;
+            break;
+          }
+          _context3.next = 19;
+          return chrome.storage.local.set({
+            youtubeToken: accessToken
+          });
+        case 19:
+          isYoutubeConnected = true;
+          updateConnectionStatus();
+          showSuccess('Successfully connected to YouTube');
+          _context3.next = 25;
+          break;
+        case 24:
+          throw new Error('No access token received');
+        case 25:
+          _context3.next = 31;
+          break;
+        case 27:
+          _context3.prev = 27;
+          _context3.t0 = _context3["catch"](0);
+          console.error('YouTube auth error:', _context3.t0);
+          showError('Failed to authenticate with YouTube');
+        case 31:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3, null, [[0, 27]]);
+  }));
+  return _authenticateYouTube.apply(this, arguments);
+}
 function authenticateSpotify() {
   return _authenticateSpotify.apply(this, arguments);
 } // Helper Functions
@@ -137,14 +200,13 @@ function _initializeExtension() {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
           _context5.next = 2;
-          return chrome.storage.local.get(['spotifyToken', 'youtubeApiKey']);
+          return chrome.storage.local.get(['spotifyToken', 'youtubeToken']);
         case 2:
           storage = _context5.sent;
           if (storage.spotifyToken) {
             isSpotifyConnected = true;
           }
-          if (storage.youtubeApiKey) {
-            youtubeKeyInput.value = storage.youtubeApiKey;
+          if (storage.youtubeToken) {
             isYoutubeConnected = true;
           }
           updateConnectionStatus();
@@ -157,109 +219,74 @@ function _initializeExtension() {
   return _initializeExtension.apply(this, arguments);
 }
 spotifyConnectButton.addEventListener('click', authenticateSpotify);
-saveKeysButton.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-  var youtubeKey;
+youtubeConnectButton.addEventListener('click', authenticateYouTube);
+convertButton.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+  var url, response;
   return _regeneratorRuntime().wrap(function _callee$(_context) {
     while (1) switch (_context.prev = _context.next) {
       case 0:
-        youtubeKey = youtubeKeyInput.value.trim();
-        if (youtubeKey) {
+        url = songLinkInput.value.trim();
+        if (validateUrl(url)) {
           _context.next = 4;
           break;
         }
-        showError('Please enter YouTube API key');
+        showError('Please enter a valid URL');
         return _context.abrupt("return");
       case 4:
         _context.prev = 4;
-        _context.next = 7;
-        return chrome.runtime.sendMessage({
-          action: 'setApiKey',
-          service: 'youtube',
-          token: youtubeKey
-        });
-      case 7:
-        isYoutubeConnected = true;
-        updateConnectionStatus();
-        showSuccess('Successfully saved YouTube API key');
-        _context.next = 15;
-        break;
-      case 12:
-        _context.prev = 12;
-        _context.t0 = _context["catch"](4);
-        showError('Failed to save YouTube API key');
-      case 15:
-      case "end":
-        return _context.stop();
-    }
-  }, _callee, null, [[4, 12]]);
-})));
-convertButton.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-  var url, response;
-  return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-    while (1) switch (_context2.prev = _context2.next) {
-      case 0:
-        url = songLinkInput.value.trim();
-        if (validateUrl(url)) {
-          _context2.next = 4;
-          break;
-        }
-        showError('Please enter a valid URL');
-        return _context2.abrupt("return");
-      case 4:
-        _context2.prev = 4;
         convertButton.disabled = true;
-        _context2.next = 8;
+        _context.next = 8;
         return chrome.runtime.sendMessage({
           action: 'convertLink',
           url: url
         });
       case 8:
-        response = _context2.sent;
+        response = _context.sent;
         if (response.success) {
           convertedLink.textContent = response.url;
           resultSection.style.display = 'block';
         } else {
           showError(response.error || 'Conversion failed');
         }
-        _context2.next = 15;
+        _context.next = 15;
         break;
       case 12:
-        _context2.prev = 12;
-        _context2.t0 = _context2["catch"](4);
+        _context.prev = 12;
+        _context.t0 = _context["catch"](4);
         showError('Failed to convert link');
       case 15:
-        _context2.prev = 15;
+        _context.prev = 15;
         convertButton.disabled = false;
-        return _context2.finish(15);
+        return _context.finish(15);
       case 18:
       case "end":
-        return _context2.stop();
+        return _context.stop();
     }
-  }, _callee2, null, [[4, 12, 15, 18]]);
+  }, _callee, null, [[4, 12, 15, 18]]);
 })));
-copyButton.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-  return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-    while (1) switch (_context3.prev = _context3.next) {
+copyButton.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+  return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+    while (1) switch (_context2.prev = _context2.next) {
       case 0:
-        _context3.prev = 0;
-        _context3.next = 3;
+        _context2.prev = 0;
+        _context2.next = 3;
         return navigator.clipboard.writeText(convertedLink.textContent);
       case 3:
         copyButton.title = 'Copied!';
         setTimeout(function () {
           copyButton.title = 'Copy to clipboard';
         }, 2000);
-        _context3.next = 10;
+        _context2.next = 10;
         break;
       case 7:
-        _context3.prev = 7;
-        _context3.t0 = _context3["catch"](0);
+        _context2.prev = 7;
+        _context2.t0 = _context2["catch"](0);
         showError('Failed to copy to clipboard');
       case 10:
       case "end":
-        return _context3.stop();
+        return _context2.stop();
     }
-  }, _callee3, null, [[0, 7]]);
+  }, _callee2, null, [[0, 7]]);
 })));
 
 // Initialize

@@ -1,6 +1,5 @@
 {
   "name": "music-transfer-extension",
-  
   "version": "1.0.0",
   "description": "Convert music links between Spotify and YouTube Music",
   "scripts": {
@@ -16,5 +15,8 @@
     "dotenv-webpack": "^8.0.1",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "lucide-react": "^0.483.0"
   }
 }

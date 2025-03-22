@@ -11,20 +11,20 @@ class TokenManager {
         return data.spotifyToken;
     }
 
-    static async getYoutubeApiKey() {
-        const data = await chrome.storage.local.get('youtubeApiKey');
-        if (!data.youtubeApiKey) {
-            throw new Error('YouTube API key required');
+    static async getYoutubeToken() {
+        const data = await chrome.storage.local.get('youtubeToken');
+        if (!data.youtubeToken) {
+            throw new Error('YouTube authentication required');
         }
-        return data.youtubeApiKey;
+        return data.youtubeToken;
     }
 
     static async setSpotifyToken(token) {
         await chrome.storage.local.set({ spotifyToken: token });
     }
 
-    static async setYoutubeApiKey(apiKey) {
-        await chrome.storage.local.set({ youtubeApiKey: apiKey });
+    static async setYoutubeToken(token) {
+        await chrome.storage.local.set({ youtubeToken: token });
     }
 }
 
@@ -83,9 +83,10 @@ class SpotifyAPI {
 
 class YouTubeAPI {
     static async searchVideo(query) {
-        const apiKey = await TokenManager.getYoutubeApiKey();
+        const token = await TokenManager.getYoutubeToken();
         const response = await fetch(
-            `${YOUTUBE_API_BASE}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${apiKey}`
+            `${YOUTUBE_API_BASE}/search?part=snippet&q=${encodeURIComponent(query)}&type=video`,
+            { headers: { 'Authorization': `Bearer ${token}` } }
         );
 
         if (!response.ok) {
@@ -101,9 +102,10 @@ class YouTubeAPI {
     }
 
     static async getVideoInfo(videoId) {
-        const apiKey = await TokenManager.getYoutubeApiKey();
+        const token = await TokenManager.getYoutubeToken();
         const response = await fetch(
-            `${YOUTUBE_API_BASE}/videos?part=snippet&id=${videoId}&key=${apiKey}`
+            `${YOUTUBE_API_BASE}/videos?part=snippet&id=${videoId}`,
+            { headers: { 'Authorization': `Bearer ${token}` } }
         );
 
         if (!response.ok) {
@@ -208,7 +210,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 if (request.service === 'spotify') {
                     await TokenManager.setSpotifyToken(request.token);
                 } else if (request.service === 'youtube') {
-                    await TokenManager.setYoutubeApiKey(request.token);
+                    await TokenManager.setYoutubeToken(request.token);
                 }
                 sendResponse({ success: true });
             } catch (error) {

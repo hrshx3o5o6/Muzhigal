@@ -50,34 +50,34 @@ var TokenManager = /*#__PURE__*/function () {
       return getSpotifyToken;
     }()
   }, {
-    key: "getYoutubeApiKey",
+    key: "getYoutubeToken",
     value: function () {
-      var _getYoutubeApiKey = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var _getYoutubeToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var data;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return chrome.storage.local.get('youtubeApiKey');
+              return chrome.storage.local.get('youtubeToken');
             case 2:
               data = _context2.sent;
-              if (data.youtubeApiKey) {
+              if (data.youtubeToken) {
                 _context2.next = 5;
                 break;
               }
-              throw new Error('YouTube API key required');
+              throw new Error('YouTube authentication required');
             case 5:
-              return _context2.abrupt("return", data.youtubeApiKey);
+              return _context2.abrupt("return", data.youtubeToken);
             case 6:
             case "end":
               return _context2.stop();
           }
         }, _callee2);
       }));
-      function getYoutubeApiKey() {
-        return _getYoutubeApiKey.apply(this, arguments);
+      function getYoutubeToken() {
+        return _getYoutubeToken.apply(this, arguments);
       }
-      return getYoutubeApiKey;
+      return getYoutubeToken;
     }()
   }, {
     key: "setSpotifyToken",
@@ -102,15 +102,15 @@ var TokenManager = /*#__PURE__*/function () {
       return setSpotifyToken;
     }()
   }, {
-    key: "setYoutubeApiKey",
+    key: "setYoutubeToken",
     value: function () {
-      var _setYoutubeApiKey = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(apiKey) {
+      var _setYoutubeToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(token) {
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
               return chrome.storage.local.set({
-                youtubeApiKey: apiKey
+                youtubeToken: token
               });
             case 2:
             case "end":
@@ -118,10 +118,10 @@ var TokenManager = /*#__PURE__*/function () {
           }
         }, _callee4);
       }));
-      function setYoutubeApiKey(_x2) {
-        return _setYoutubeApiKey.apply(this, arguments);
+      function setYoutubeToken(_x2) {
+        return _setYoutubeToken.apply(this, arguments);
       }
-      return setYoutubeApiKey;
+      return setYoutubeToken;
     }()
   }]);
 }(); // Music service APIs
@@ -251,16 +251,20 @@ var YouTubeAPI = /*#__PURE__*/function () {
     value: function () {
       var _searchVideo = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(query) {
         var _data$items;
-        var apiKey, response, data;
+        var token, response, data;
         return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) switch (_context7.prev = _context7.next) {
             case 0:
               _context7.next = 2;
-              return TokenManager.getYoutubeApiKey();
+              return TokenManager.getYoutubeToken();
             case 2:
-              apiKey = _context7.sent;
+              token = _context7.sent;
               _context7.next = 5;
-              return fetch("".concat(YOUTUBE_API_BASE, "/search?part=snippet&q=").concat(encodeURIComponent(query), "&type=video&key=").concat(apiKey));
+              return fetch("".concat(YOUTUBE_API_BASE, "/search?part=snippet&q=").concat(encodeURIComponent(query), "&type=video"), {
+                headers: {
+                  'Authorization': "Bearer ".concat(token)
+                }
+              });
             case 5:
               response = _context7.sent;
               if (response.ok) {
@@ -296,16 +300,20 @@ var YouTubeAPI = /*#__PURE__*/function () {
     value: function () {
       var _getVideoInfo = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(videoId) {
         var _data$items2;
-        var apiKey, response, data;
+        var token, response, data;
         return _regeneratorRuntime().wrap(function _callee8$(_context8) {
           while (1) switch (_context8.prev = _context8.next) {
             case 0:
               _context8.next = 2;
-              return TokenManager.getYoutubeApiKey();
+              return TokenManager.getYoutubeToken();
             case 2:
-              apiKey = _context8.sent;
+              token = _context8.sent;
               _context8.next = 5;
-              return fetch("".concat(YOUTUBE_API_BASE, "/videos?part=snippet&id=").concat(videoId, "&key=").concat(apiKey));
+              return fetch("".concat(YOUTUBE_API_BASE, "/videos?part=snippet&id=").concat(videoId), {
+                headers: {
+                  'Authorization': "Bearer ".concat(token)
+                }
+              });
             case 5:
               response = _context8.sent;
               if (response.ok) {
@@ -520,7 +528,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
               break;
             }
             _context12.next = 9;
-            return TokenManager.setYoutubeApiKey(request.token);
+            return TokenManager.setYoutubeToken(request.token);
           case 9:
             sendResponse({
               success: true

@@ -5,10 +5,9 @@ const errorSection = document.getElementById('error-section');
 const errorMessage = document.getElementById('error-message');
 
 const spotifyConnectButton = document.getElementById('spotify-connect');
-const youtubeKeyInput = document.getElementById('youtube-key');
+const youtubeConnectButton = document.getElementById('youtube-connect');
 const spotifyStatus = document.getElementById('spotify-status');
 const youtubeStatus = document.getElementById('youtube-status');
-const saveKeysButton = document.getElementById('save-keys');
 
 const songLinkInput = document.getElementById('song-link');
 const convertButton = document.getElementById('convert-button');
@@ -19,6 +18,47 @@ const copyButton = document.getElementById('copy-button');
 // State Management
 let isSpotifyConnected = false;
 let isYoutubeConnected = false;
+
+// YouTube Auth
+async function authenticateYouTube() {
+    try {
+        const redirectUri = chrome.identity.getRedirectURL();
+        console.log('Your redirect URI:', redirectUri);
+        
+        const clientId = '294309007388-poqnpffdamrndbl85kkbhegrnti3ohci.apps.googleusercontent.com';
+        const scopes = [
+            'https://www.googleapis.com/auth/youtube.readonly'
+        ];
+        
+        const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+        authUrl.searchParams.append('client_id', clientId);
+        authUrl.searchParams.append('response_type', 'token');
+        authUrl.searchParams.append('redirect_uri', redirectUri);
+        authUrl.searchParams.append('scope', scopes.join(' '));
+        
+        const responseUrl = await chrome.identity.launchWebAuthFlow({
+            url: authUrl.toString(),
+            interactive: true
+        });
+        
+        if (responseUrl) {
+            const hashParams = new URLSearchParams(new URL(responseUrl).hash.substr(1));
+            const accessToken = hashParams.get('access_token');
+            
+            if (accessToken) {
+                await chrome.storage.local.set({ youtubeToken: accessToken });
+                isYoutubeConnected = true;
+                updateConnectionStatus();
+                showSuccess('Successfully connected to YouTube');
+            } else {
+                throw new Error('No access token received');
+            }
+        }
+    } catch (error) {
+        console.error('YouTube auth error:', error);
+        showError('Failed to authenticate with YouTube');
+    }
+}
 
 // Spotify Auth
 async function authenticateSpotify() {
@@ -104,14 +144,13 @@ function validateUrl(url) {
 
 // Initialize Extension
 async function initializeExtension() {
-    const storage = await chrome.storage.local.get(['spotifyToken', 'youtubeApiKey']);
+    const storage = await chrome.storage.local.get(['spotifyToken', 'youtubeToken']);
     
     if (storage.spotifyToken) {
         isSpotifyConnected = true;
     }
     
-    if (storage.youtubeApiKey) {
-        youtubeKeyInput.value = storage.youtubeApiKey;
+    if (storage.youtubeToken) {
         isYoutubeConnected = true;
     }
     
@@ -120,29 +159,7 @@ async function initializeExtension() {
 
 // Event Listeners
 spotifyConnectButton.addEventListener('click', authenticateSpotify);
-
-saveKeysButton.addEventListener('click', async () => {
-    const youtubeKey = youtubeKeyInput.value.trim();
-    
-    if (!youtubeKey) {
-        showError('Please enter YouTube API key');
-        return;
-    }
-    
-    try {
-        await chrome.runtime.sendMessage({
-            action: 'setApiKey',
-            service: 'youtube',
-            token: youtubeKey
-        });
-        
-        isYoutubeConnected = true;
-        updateConnectionStatus();
-        showSuccess('Successfully saved YouTube API key');
-    } catch (error) {
-        showError('Failed to save YouTube API key');
-    }
-});
+youtubeConnectButton.addEventListener('click', authenticateYouTube);
 
 convertButton.addEventListener('click', async () => {
     const url = songLinkInput.value.trim();
