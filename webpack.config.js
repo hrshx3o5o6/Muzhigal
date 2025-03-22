@@ -6,6 +6,9 @@ const webpack = require('webpack');
 module.exports = {
     mode: 'development',
     devtool: false,
+    stats: {
+        errorDetails: true
+    },
     entry: {
         popup: './src/popup.js',
         background: './src/background.js'
@@ -34,20 +37,16 @@ module.exports = {
             patterns: [
                 { from: "src/manifest.json" },
                 { from: "src/popup.html" },
+                { from: "src/styles.css" },
                 { from: "src/icons", to: "icons", noErrorOnMissing: true }
             ],
-        }),
-        new webpack.DefinePlugin({
-            'process.env': JSON.stringify({
-                SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
-                YOUTUBE_CLIENT_ID: process.env.YOUTUBE_API_CLIENT_ID
-            })
         }),
         new Dotenv({
             path: './.env',
             safe: false,
             systemvars: true,
-            defaults: false
+            defaults: false,
+            prefix: 'process.env.'
         })
     ]
 };
