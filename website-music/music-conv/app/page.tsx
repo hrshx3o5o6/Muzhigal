@@ -44,6 +44,11 @@ export default function Home() {
               </Link>
             </li>
             <li>
+              <Link href="/privacy-policy" className="hover:text-purple-400 transition-colors">
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
               <Link
                 href="https://chrome.google.com/webstore"
                 target="_blank"
