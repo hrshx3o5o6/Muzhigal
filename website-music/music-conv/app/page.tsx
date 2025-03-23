@@ -29,7 +29,7 @@ export default function Home() {
               <circle cx="18" cy="16" r="3" />
             </svg>
           </div>
-          <span className="text-xl font-bold">MusicBridge</span>
+          <span className="text-xl font-bold">Musically</span>
         </div>
         <nav>
           <ul className="flex gap-6">

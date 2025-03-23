@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
               <circle cx="18" cy="16" r="3" />
             </svg>
           </div>
-          <span className="text-xl font-bold">MusicBridge</span>
+          <span className="text-xl font-bold">Musically</span>
         </Link>
         <nav>
           <Link href="/" className="hover:text-purple-400 transition-colors">
@@ -105,7 +105,7 @@ export default function PrivacyPolicy() {
 
       <footer className="bg-slate-900 border-t border-slate-800 py-8 mt-12">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-slate-400 text-sm">© {new Date().getFullYear()} MusicBridge. All rights reserved.</p>
+          <p className="text-slate-400 text-sm">© {new Date().getFullYear()} Musically. All rights reserved.</p>
         </div>
       </footer>
     </div>
