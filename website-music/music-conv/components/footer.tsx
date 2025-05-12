@@ -1,77 +1,101 @@
-import { Check, Clock, Search, Lock, Zap, Globe } from "lucide-react"
+import Link from "next/link"
+import { Music } from "lucide-react"
 
 export function Footer() {
   return (
-    <section id="features" className="py-20 bg-gradient-to-b from-slate-800 to-slate-900">
+    <footer className="bg-slate-900 border-t border-slate-800 py-12">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Why Use MusicBridge?</h2>
-        <p className="text-xl text-slate-300 text-center mb-16 max-w-2xl mx-auto">
-          Our Chrome extension makes sharing music across platforms effortless
-        </p>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <div className="w-12 h-12 bg-purple-600/20 rounded-full flex items-center justify-center mb-4">
-              <Zap className="w-6 h-6 text-purple-400" />
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex items-center gap-2 mb-6 md:mb-0">
+            <div className="bg-purple-600 p-2 rounded-full">
+              <Music className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-3">Instant Conversion</h3>
-            <p className="text-slate-300">
-              No manual searching required. Convert links in seconds with our powerful algorithm.
-            </p>
+            <span className="text-xl font-bold">MusicBridge</span>
           </div>
 
-          <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <div className="w-12 h-12 bg-purple-600/20 rounded-full flex items-center justify-center mb-4">
-              <Search className="w-6 h-6 text-purple-400" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">Accurate Matching</h3>
-            <p className="text-slate-300">
-              Get the exact same song, album, or playlist across platforms with precise matching.
-            </p>
-          </div>
+          <nav className="mb-6 md:mb-0">
+            <ul className="flex gap-8">
+              <li>
+                <Link href="#how-it-works" className="text-slate-300 hover:text-white transition-colors">
+                  How It Works
+                </Link>
+              </li>
+              <li>
+                <Link href="#features" className="text-slate-300 hover:text-white transition-colors">
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy-policy" className="text-slate-300 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-slate-300 hover:text-white transition-colors">
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </nav>
 
-          <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <div className="w-12 h-12 bg-purple-600/20 rounded-full flex items-center justify-center mb-4">
-              <Lock className="w-6 h-6 text-purple-400" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">No Login Required</h3>
-            <p className="text-slate-300">
-              Just paste, convert, and share. No accounts or personal information needed.
-            </p>
-          </div>
-
-          <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <div className="w-12 h-12 bg-purple-600/20 rounded-full flex items-center justify-center mb-4">
-              <Check className="w-6 h-6 text-purple-400" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">Completely Free</h3>
-            <p className="text-slate-300">
-              Enjoy seamless music sharing at zero cost. No hidden fees or premium tiers.
-            </p>
-          </div>
-
-          <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <div className="w-12 h-12 bg-purple-600/20 rounded-full flex items-center justify-center mb-4">
-              <Clock className="w-6 h-6 text-purple-400" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">Save Time</h3>
-            <p className="text-slate-300">
-              Stop manually searching for songs. Our extension saves you time with one-click conversion.
-            </p>
-          </div>
-
-          <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <div className="w-12 h-12 bg-purple-600/20 rounded-full flex items-center justify-center mb-4">
-              <Globe className="w-6 h-6 text-purple-400" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">Universal Music</h3>
-            <p className="text-slate-300">
-              Share music with anyone, regardless of which streaming platform they prefer.
-            </p>
+          <div className="flex gap-4">
+            <Link href="#" className="text-slate-300 hover:text-white transition-colors">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
+              >
+                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+              </svg>
+            </Link>
+            <Link href="#" className="text-slate-300 hover:text-white transition-colors">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
+              >
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+              </svg>
+            </Link>
+            <Link href="#" className="text-slate-300 hover:text-white transition-colors">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
+              >
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+              </svg>
+            </Link>
           </div>
         </div>
+
+        <div className="mt-8 pt-8 border-t border-slate-800 text-center text-slate-400 text-sm">
+          <p>© {new Date().getFullYear()} MusicBridge. All rights reserved.</p>
+        </div>
       </div>
-    </section>
+    </footer>
   )
 }
-

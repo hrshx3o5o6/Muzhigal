@@ -4,7 +4,7 @@ export function Features() {
   return (
     <section id="features" className="py-20 bg-gradient-to-b from-slate-800 to-slate-900">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Why Use Musically?</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Why Use MusicBridge?</h2>
         <p className="text-xl text-slate-300 text-center mb-16 max-w-2xl mx-auto">
           Our Chrome extension makes sharing music across platforms effortless
         </p>
