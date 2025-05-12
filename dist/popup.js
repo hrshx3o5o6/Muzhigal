@@ -320,5 +320,22 @@ copyButton.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*
 
 // Initialize
 initializeExtension();
+
+// Add this to your existing message listeners
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.action === 'requireAuth') {
+    if (request.service === 'spotify') {
+      showError(request.message);
+      // Reset UI to show Spotify login button
+      document.getElementById('spotifyLoginBtn').style.display = 'block';
+      document.getElementById('spotifyConnected').style.display = 'none';
+    } else if (request.service === 'youtube') {
+      showError(request.message);
+      // Reset UI to show YouTube login button
+      document.getElementById('youtubeLoginBtn').style.display = 'block';
+      document.getElementById('youtubeConnected').style.display = 'none';
+    }
+  }
+});
 /******/ })()
 ;

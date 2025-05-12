@@ -20,81 +20,24 @@ var TokenManager = /*#__PURE__*/function () {
     _classCallCheck(this, TokenManager);
   }
   return _createClass(TokenManager, null, [{
-    key: "getSpotifyToken",
+    key: "setSpotifyToken",
     value: function () {
-      var _getSpotifyToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var data;
+      var _setSpotifyToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(token) {
+        var expirationTime;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
-              return chrome.storage.local.get('spotifyToken');
-            case 2:
-              data = _context.sent;
-              if (data.spotifyToken) {
-                _context.next = 5;
-                break;
-              }
-              throw new Error('Spotify authentication required');
-            case 5:
-              return _context.abrupt("return", data.spotifyToken);
-            case 6:
+              expirationTime = Date.now() + 3600 * 1000; // 1 hour from now
+              _context.next = 3;
+              return chrome.storage.local.set({
+                spotifyToken: token,
+                spotifyTokenExpiration: expirationTime
+              });
+            case 3:
             case "end":
               return _context.stop();
           }
         }, _callee);
-      }));
-      function getSpotifyToken() {
-        return _getSpotifyToken.apply(this, arguments);
-      }
-      return getSpotifyToken;
-    }()
-  }, {
-    key: "getYoutubeToken",
-    value: function () {
-      var _getYoutubeToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var data;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return chrome.storage.local.get('youtubeToken');
-            case 2:
-              data = _context2.sent;
-              if (data.youtubeToken) {
-                _context2.next = 5;
-                break;
-              }
-              throw new Error('YouTube authentication required');
-            case 5:
-              return _context2.abrupt("return", data.youtubeToken);
-            case 6:
-            case "end":
-              return _context2.stop();
-          }
-        }, _callee2);
-      }));
-      function getYoutubeToken() {
-        return _getYoutubeToken.apply(this, arguments);
-      }
-      return getYoutubeToken;
-    }()
-  }, {
-    key: "setSpotifyToken",
-    value: function () {
-      var _setSpotifyToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(token) {
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-          while (1) switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.next = 2;
-              return chrome.storage.local.set({
-                spotifyToken: token
-              });
-            case 2:
-            case "end":
-              return _context3.stop();
-          }
-        }, _callee3);
       }));
       function setSpotifyToken(_x) {
         return _setSpotifyToken.apply(this, arguments);
@@ -104,27 +47,140 @@ var TokenManager = /*#__PURE__*/function () {
   }, {
     key: "setYoutubeToken",
     value: function () {
-      var _setYoutubeToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(token) {
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-          while (1) switch (_context4.prev = _context4.next) {
+      var _setYoutubeToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(token) {
+        var expirationTime;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              _context4.next = 2;
+              expirationTime = Date.now() + 3600 * 1000; // 1 hour from now
+              _context2.next = 3;
               return chrome.storage.local.set({
-                youtubeToken: token
+                youtubeToken: token,
+                youtubeTokenExpiration: expirationTime
               });
-            case 2:
+            case 3:
             case "end":
-              return _context4.stop();
+              return _context2.stop();
           }
-        }, _callee4);
+        }, _callee2);
       }));
       function setYoutubeToken(_x2) {
         return _setYoutubeToken.apply(this, arguments);
       }
       return setYoutubeToken;
     }()
+  }, {
+    key: "getSpotifyToken",
+    value: function () {
+      var _getSpotifyToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var data;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return chrome.storage.local.get(['spotifyToken', 'spotifyTokenExpiration']);
+            case 2:
+              data = _context3.sent;
+              if (!(!data.spotifyToken || Date.now() > data.spotifyTokenExpiration)) {
+                _context3.next = 5;
+                break;
+              }
+              throw new Error('Spotify authentication required');
+            case 5:
+              return _context3.abrupt("return", data.spotifyToken);
+            case 6:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3);
+      }));
+      function getSpotifyToken() {
+        return _getSpotifyToken.apply(this, arguments);
+      }
+      return getSpotifyToken;
+    }()
+  }, {
+    key: "getYoutubeToken",
+    value: function () {
+      var _getYoutubeToken = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var data;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return chrome.storage.local.get(['youtubeToken', 'youtubeTokenExpiration']);
+            case 2:
+              data = _context4.sent;
+              if (!(!data.youtubeToken || Date.now() > data.youtubeTokenExpiration)) {
+                _context4.next = 5;
+                break;
+              }
+              throw new Error('YouTube authentication required');
+            case 5:
+              return _context4.abrupt("return", data.youtubeToken);
+            case 6:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4);
+      }));
+      function getYoutubeToken() {
+        return _getYoutubeToken.apply(this, arguments);
+      }
+      return getYoutubeToken;
+    }()
+  }, {
+    key: "checkAndRefreshTokens",
+    value: function () {
+      var _checkAndRefreshTokens = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var data, now;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.prev = 0;
+              _context5.next = 3;
+              return chrome.storage.local.get(['spotifyTokenExpiration', 'youtubeTokenExpiration']);
+            case 3:
+              data = _context5.sent;
+              now = Date.now();
+              if (data.spotifyTokenExpiration && now > data.spotifyTokenExpiration) {
+                chrome.runtime.sendMessage({
+                  action: 'requireAuth',
+                  service: 'spotify',
+                  message: 'Spotify session expired. Please log in again.'
+                });
+              }
+              if (data.youtubeTokenExpiration && now > data.youtubeTokenExpiration) {
+                chrome.runtime.sendMessage({
+                  action: 'requireAuth',
+                  service: 'youtube',
+                  message: 'YouTube session expired. Please log in again.'
+                });
+              }
+              _context5.next = 12;
+              break;
+            case 9:
+              _context5.prev = 9;
+              _context5.t0 = _context5["catch"](0);
+              console.error('Token refresh check failed:', _context5.t0);
+            case 12:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5, null, [[0, 9]]);
+      }));
+      function checkAndRefreshTokens() {
+        return _checkAndRefreshTokens.apply(this, arguments);
+      }
+      return checkAndRefreshTokens;
+    }()
   }]);
-}(); // Music service APIs
+}(); // Add periodic token check (every 5 minutes)
+setInterval(function () {
+  return TokenManager.checkAndRefreshTokens();
+}, 5 * 60 * 1000);
+
+// Music service APIs
 var SpotifyAPI = /*#__PURE__*/function () {
   function SpotifyAPI() {
     _classCallCheck(this, SpotifyAPI);
@@ -132,18 +188,18 @@ var SpotifyAPI = /*#__PURE__*/function () {
   return _createClass(SpotifyAPI, null, [{
     key: "getTrackInfo",
     value: function () {
-      var _getTrackInfo = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(trackId) {
+      var _getTrackInfo = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(trackId) {
         var token, response, errorData, data;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-          while (1) switch (_context5.prev = _context5.next) {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
             case 0:
-              _context5.prev = 0;
-              _context5.next = 3;
+              _context6.prev = 0;
+              _context6.next = 3;
               return TokenManager.getSpotifyToken();
             case 3:
-              token = _context5.sent;
+              token = _context6.sent;
               console.log('Making Spotify API request for track:', trackId);
-              _context5.next = 7;
+              _context6.next = 7;
               return fetch("".concat(SPOTIFY_API_BASE, "/tracks/").concat(trackId), {
                 headers: {
                   'Authorization': "Bearer ".concat(token),
@@ -151,17 +207,17 @@ var SpotifyAPI = /*#__PURE__*/function () {
                 }
               });
             case 7:
-              response = _context5.sent;
+              response = _context6.sent;
               if (response.ok) {
-                _context5.next = 14;
+                _context6.next = 14;
                 break;
               }
-              _context5.next = 11;
+              _context6.next = 11;
               return response.json()["catch"](function () {
                 return {};
               });
             case 11:
-              errorData = _context5.sent;
+              errorData = _context6.sent;
               console.error('Spotify API error:', {
                 status: response.status,
                 statusText: response.statusText,
@@ -169,22 +225,22 @@ var SpotifyAPI = /*#__PURE__*/function () {
               });
               throw new Error("Spotify API error: ".concat(response.status, " ").concat(response.statusText));
             case 14:
-              _context5.next = 16;
+              _context6.next = 16;
               return response.json();
             case 16:
-              data = _context5.sent;
+              data = _context6.sent;
               console.log('Spotify track data:', data);
-              return _context5.abrupt("return", data);
+              return _context6.abrupt("return", data);
             case 21:
-              _context5.prev = 21;
-              _context5.t0 = _context5["catch"](0);
-              console.error('Failed to fetch track from Spotify:', _context5.t0);
-              throw new Error('Failed to fetch track from Spotify: ' + _context5.t0.message);
+              _context6.prev = 21;
+              _context6.t0 = _context6["catch"](0);
+              console.error('Failed to fetch track from Spotify:', _context6.t0);
+              throw new Error('Failed to fetch track from Spotify: ' + _context6.t0.message);
             case 25:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
-        }, _callee5, null, [[0, 21]]);
+        }, _callee6, null, [[0, 21]]);
       }));
       function getTrackInfo(_x3) {
         return _getTrackInfo.apply(this, arguments);
@@ -194,46 +250,46 @@ var SpotifyAPI = /*#__PURE__*/function () {
   }, {
     key: "searchTrack",
     value: function () {
-      var _searchTrack = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(query) {
+      var _searchTrack = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(query) {
         var _data$tracks;
         var token, response, data;
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-          while (1) switch (_context6.prev = _context6.next) {
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) switch (_context7.prev = _context7.next) {
             case 0:
-              _context6.next = 2;
+              _context7.next = 2;
               return TokenManager.getSpotifyToken();
             case 2:
-              token = _context6.sent;
-              _context6.next = 5;
+              token = _context7.sent;
+              _context7.next = 5;
               return fetch("".concat(SPOTIFY_API_BASE, "/search?q=").concat(encodeURIComponent(query), "&type=track&limit=1"), {
                 headers: {
                   'Authorization': "Bearer ".concat(token)
                 }
               });
             case 5:
-              response = _context6.sent;
+              response = _context7.sent;
               if (response.ok) {
-                _context6.next = 8;
+                _context7.next = 8;
                 break;
               }
               throw new Error('Failed to search on Spotify');
             case 8:
-              _context6.next = 10;
+              _context7.next = 10;
               return response.json();
             case 10:
-              data = _context6.sent;
+              data = _context7.sent;
               if ((_data$tracks = data.tracks) !== null && _data$tracks !== void 0 && (_data$tracks = _data$tracks.items) !== null && _data$tracks !== void 0 && _data$tracks.length) {
-                _context6.next = 13;
+                _context7.next = 13;
                 break;
               }
               throw new Error('No matching track found on Spotify');
             case 13:
-              return _context6.abrupt("return", data.tracks.items[0]);
+              return _context7.abrupt("return", data.tracks.items[0]);
             case 14:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
-        }, _callee6);
+        }, _callee7);
       }));
       function searchTrack(_x4) {
         return _searchTrack.apply(this, arguments);
@@ -249,57 +305,8 @@ var YouTubeAPI = /*#__PURE__*/function () {
   return _createClass(YouTubeAPI, null, [{
     key: "searchVideo",
     value: function () {
-      var _searchVideo = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(query) {
+      var _searchVideo = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(query) {
         var _data$items;
-        var token, response, data;
-        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
-          while (1) switch (_context7.prev = _context7.next) {
-            case 0:
-              _context7.next = 2;
-              return TokenManager.getYoutubeToken();
-            case 2:
-              token = _context7.sent;
-              _context7.next = 5;
-              return fetch("".concat(YOUTUBE_API_BASE, "/search?part=snippet&q=").concat(encodeURIComponent(query), "&type=video"), {
-                headers: {
-                  'Authorization': "Bearer ".concat(token)
-                }
-              });
-            case 5:
-              response = _context7.sent;
-              if (response.ok) {
-                _context7.next = 8;
-                break;
-              }
-              throw new Error('Failed to search on YouTube');
-            case 8:
-              _context7.next = 10;
-              return response.json();
-            case 10:
-              data = _context7.sent;
-              if ((_data$items = data.items) !== null && _data$items !== void 0 && _data$items.length) {
-                _context7.next = 13;
-                break;
-              }
-              throw new Error('No matching video found on YouTube');
-            case 13:
-              return _context7.abrupt("return", data.items[0]);
-            case 14:
-            case "end":
-              return _context7.stop();
-          }
-        }, _callee7);
-      }));
-      function searchVideo(_x5) {
-        return _searchVideo.apply(this, arguments);
-      }
-      return searchVideo;
-    }()
-  }, {
-    key: "getVideoInfo",
-    value: function () {
-      var _getVideoInfo = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(videoId) {
-        var _data$items2;
         var token, response, data;
         return _regeneratorRuntime().wrap(function _callee8$(_context8) {
           while (1) switch (_context8.prev = _context8.next) {
@@ -309,7 +316,7 @@ var YouTubeAPI = /*#__PURE__*/function () {
             case 2:
               token = _context8.sent;
               _context8.next = 5;
-              return fetch("".concat(YOUTUBE_API_BASE, "/videos?part=snippet&id=").concat(videoId), {
+              return fetch("".concat(YOUTUBE_API_BASE, "/search?part=snippet&q=").concat(encodeURIComponent(query), "&type=video"), {
                 headers: {
                   'Authorization': "Bearer ".concat(token)
                 }
@@ -320,17 +327,17 @@ var YouTubeAPI = /*#__PURE__*/function () {
                 _context8.next = 8;
                 break;
               }
-              throw new Error('Failed to fetch video info from YouTube');
+              throw new Error('Failed to search on YouTube');
             case 8:
               _context8.next = 10;
               return response.json();
             case 10:
               data = _context8.sent;
-              if ((_data$items2 = data.items) !== null && _data$items2 !== void 0 && _data$items2[0]) {
+              if ((_data$items = data.items) !== null && _data$items !== void 0 && _data$items.length) {
                 _context8.next = 13;
                 break;
               }
-              throw new Error('Video not found on YouTube');
+              throw new Error('No matching video found on YouTube');
             case 13:
               return _context8.abrupt("return", data.items[0]);
             case 14:
@@ -338,6 +345,55 @@ var YouTubeAPI = /*#__PURE__*/function () {
               return _context8.stop();
           }
         }, _callee8);
+      }));
+      function searchVideo(_x5) {
+        return _searchVideo.apply(this, arguments);
+      }
+      return searchVideo;
+    }()
+  }, {
+    key: "getVideoInfo",
+    value: function () {
+      var _getVideoInfo = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(videoId) {
+        var _data$items2;
+        var token, response, data;
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+          while (1) switch (_context9.prev = _context9.next) {
+            case 0:
+              _context9.next = 2;
+              return TokenManager.getYoutubeToken();
+            case 2:
+              token = _context9.sent;
+              _context9.next = 5;
+              return fetch("".concat(YOUTUBE_API_BASE, "/videos?part=snippet&id=").concat(videoId), {
+                headers: {
+                  'Authorization': "Bearer ".concat(token)
+                }
+              });
+            case 5:
+              response = _context9.sent;
+              if (response.ok) {
+                _context9.next = 8;
+                break;
+              }
+              throw new Error('Failed to fetch video info from YouTube');
+            case 8:
+              _context9.next = 10;
+              return response.json();
+            case 10:
+              data = _context9.sent;
+              if ((_data$items2 = data.items) !== null && _data$items2 !== void 0 && _data$items2[0]) {
+                _context9.next = 13;
+                break;
+              }
+              throw new Error('Video not found on YouTube');
+            case 13:
+              return _context9.abrupt("return", data.items[0]);
+            case 14:
+            case "end":
+              return _context9.stop();
+          }
+        }, _callee9);
       }));
       function getVideoInfo(_x6) {
         return _getVideoInfo.apply(this, arguments);
@@ -373,36 +429,36 @@ var MusicLinkConverter = /*#__PURE__*/function () {
   }, {
     key: "spotifyToYoutube",
     value: function () {
-      var _spotifyToYoutube = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(spotifyUrl) {
+      var _spotifyToYoutube = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(spotifyUrl) {
         var trackId, trackInfo, searchQuery, video;
-        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-          while (1) switch (_context9.prev = _context9.next) {
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+          while (1) switch (_context10.prev = _context10.next) {
             case 0:
-              _context9.prev = 0;
+              _context10.prev = 0;
               console.log('Converting Spotify URL:', spotifyUrl);
               trackId = this.extractSpotifyTrackId(spotifyUrl);
               console.log('Extracted track ID:', trackId);
-              _context9.next = 6;
+              _context10.next = 6;
               return SpotifyAPI.getTrackInfo(trackId);
             case 6:
-              trackInfo = _context9.sent;
+              trackInfo = _context10.sent;
               searchQuery = "".concat(trackInfo.name, " ").concat(trackInfo.artists[0].name);
               console.log('Searching YouTube for:', searchQuery);
-              _context9.next = 11;
+              _context10.next = 11;
               return YouTubeAPI.searchVideo(searchQuery);
             case 11:
-              video = _context9.sent;
-              return _context9.abrupt("return", "https://music.youtube.com/watch?v=".concat(video.id.videoId));
+              video = _context10.sent;
+              return _context10.abrupt("return", "https://music.youtube.com/watch?v=".concat(video.id.videoId));
             case 15:
-              _context9.prev = 15;
-              _context9.t0 = _context9["catch"](0);
-              console.error('Spotify to YouTube conversion error:', _context9.t0);
-              throw _context9.t0;
+              _context10.prev = 15;
+              _context10.t0 = _context10["catch"](0);
+              console.error('Spotify to YouTube conversion error:', _context10.t0);
+              throw _context10.t0;
             case 19:
             case "end":
-              return _context9.stop();
+              return _context10.stop();
           }
-        }, _callee9, this, [[0, 15]]);
+        }, _callee10, this, [[0, 15]]);
       }));
       function spotifyToYoutube(_x7) {
         return _spotifyToYoutube.apply(this, arguments);
@@ -412,38 +468,38 @@ var MusicLinkConverter = /*#__PURE__*/function () {
   }, {
     key: "youtubeToSpotify",
     value: function () {
-      var _youtubeToSpotify = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(youtubeUrl) {
+      var _youtubeToSpotify = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(youtubeUrl) {
         var videoId, videoInfo, track;
-        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
-          while (1) switch (_context10.prev = _context10.next) {
+        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+          while (1) switch (_context11.prev = _context11.next) {
             case 0:
-              _context10.prev = 0;
+              _context11.prev = 0;
               videoId = new URL(youtubeUrl).searchParams.get('v');
               if (videoId) {
-                _context10.next = 4;
+                _context11.next = 4;
                 break;
               }
               throw new Error('Invalid YouTube URL');
             case 4:
-              _context10.next = 6;
+              _context11.next = 6;
               return YouTubeAPI.getVideoInfo(videoId);
             case 6:
-              videoInfo = _context10.sent;
-              _context10.next = 9;
+              videoInfo = _context11.sent;
+              _context11.next = 9;
               return SpotifyAPI.searchTrack(videoInfo.snippet.title);
             case 9:
-              track = _context10.sent;
-              return _context10.abrupt("return", track.external_urls.spotify);
+              track = _context11.sent;
+              return _context11.abrupt("return", track.external_urls.spotify);
             case 13:
-              _context10.prev = 13;
-              _context10.t0 = _context10["catch"](0);
-              console.error('YouTube to Spotify conversion error:', _context10.t0);
-              throw _context10.t0;
+              _context11.prev = 13;
+              _context11.t0 = _context11["catch"](0);
+              console.error('YouTube to Spotify conversion error:', _context11.t0);
+              throw _context11.t0;
             case 17:
             case "end":
-              return _context10.stop();
+              return _context11.stop();
           }
-        }, _callee10, null, [[0, 13]]);
+        }, _callee11, null, [[0, 13]]);
       }));
       function youtubeToSpotify(_x8) {
         return _youtubeToSpotify.apply(this, arguments);
@@ -454,34 +510,34 @@ var MusicLinkConverter = /*#__PURE__*/function () {
 }(); // Message handling
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'convertLink') {
-    _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
+    _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
       var url, convertedUrl;
-      return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-        while (1) switch (_context11.prev = _context11.next) {
+      return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+        while (1) switch (_context12.prev = _context12.next) {
           case 0:
-            _context11.prev = 0;
+            _context12.prev = 0;
             // Don't convert URL to lowercase
             url = request.url;
             if (!url.toLowerCase().includes('spotify.com')) {
-              _context11.next = 8;
+              _context12.next = 8;
               break;
             }
-            _context11.next = 5;
+            _context12.next = 5;
             return MusicLinkConverter.spotifyToYoutube(url);
           case 5:
-            convertedUrl = _context11.sent;
-            _context11.next = 15;
+            convertedUrl = _context12.sent;
+            _context12.next = 15;
             break;
           case 8:
             if (!(url.toLowerCase().includes('youtube.com') || url.toLowerCase().includes('youtu.be'))) {
-              _context11.next = 14;
+              _context12.next = 14;
               break;
             }
-            _context11.next = 11;
+            _context12.next = 11;
             return MusicLinkConverter.youtubeToSpotify(url);
           case 11:
-            convertedUrl = _context11.sent;
-            _context11.next = 15;
+            convertedUrl = _context12.sent;
+            _context12.next = 15;
             break;
           case 14:
             throw new Error('Invalid URL. Please provide a Spotify or YouTube Music link.');
@@ -490,63 +546,63 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
               success: true,
               url: convertedUrl
             });
-            _context11.next = 21;
+            _context12.next = 21;
             break;
           case 18:
-            _context11.prev = 18;
-            _context11.t0 = _context11["catch"](0);
-            sendResponse({
-              success: false,
-              error: _context11.t0.message
-            });
-          case 21:
-          case "end":
-            return _context11.stop();
-        }
-      }, _callee11, null, [[0, 18]]);
-    }))();
-    return true;
-  }
-  if (request.action === 'setApiKey') {
-    _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
-      return _regeneratorRuntime().wrap(function _callee12$(_context12) {
-        while (1) switch (_context12.prev = _context12.next) {
-          case 0:
-            _context12.prev = 0;
-            if (!(request.service === 'spotify')) {
-              _context12.next = 6;
-              break;
-            }
-            _context12.next = 4;
-            return TokenManager.setSpotifyToken(request.token);
-          case 4:
-            _context12.next = 9;
-            break;
-          case 6:
-            if (!(request.service === 'youtube')) {
-              _context12.next = 9;
-              break;
-            }
-            _context12.next = 9;
-            return TokenManager.setYoutubeToken(request.token);
-          case 9:
-            sendResponse({
-              success: true
-            });
-            _context12.next = 15;
-            break;
-          case 12:
-            _context12.prev = 12;
+            _context12.prev = 18;
             _context12.t0 = _context12["catch"](0);
             sendResponse({
               success: false,
               error: _context12.t0.message
             });
-          case 15:
+          case 21:
           case "end":
             return _context12.stop();
         }
-      }, _callee12, null, [[0, 12]]);
+      }, _callee12, null, [[0, 18]]);
+    }))();
+    return true;
+  }
+  if (request.action === 'setApiKey') {
+    _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee13() {
+      return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+        while (1) switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.prev = 0;
+            if (!(request.service === 'spotify')) {
+              _context13.next = 6;
+              break;
+            }
+            _context13.next = 4;
+            return TokenManager.setSpotifyToken(request.token);
+          case 4:
+            _context13.next = 9;
+            break;
+          case 6:
+            if (!(request.service === 'youtube')) {
+              _context13.next = 9;
+              break;
+            }
+            _context13.next = 9;
+            return TokenManager.setYoutubeToken(request.token);
+          case 9:
+            sendResponse({
+              success: true
+            });
+            _context13.next = 15;
+            break;
+          case 12:
+            _context13.prev = 12;
+            _context13.t0 = _context13["catch"](0);
+            sendResponse({
+              success: false,
+              error: _context13.t0.message
+            });
+          case 15:
+          case "end":
+            return _context13.stop();
+        }
+      }, _callee13, null, [[0, 12]]);
     }))();
     return true;
   }

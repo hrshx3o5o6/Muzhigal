@@ -3,30 +3,66 @@ const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 
 // Auth token management
 class TokenManager {
+    static async setSpotifyToken(token) {
+        const expirationTime = Date.now() + (3600 * 1000); // 1 hour from now
+        await chrome.storage.local.set({ 
+            spotifyToken: token,
+            spotifyTokenExpiration: expirationTime 
+        });
+    }
+
+    static async setYoutubeToken(token) {
+        const expirationTime = Date.now() + (3600 * 1000); // 1 hour from now
+        await chrome.storage.local.set({ 
+            youtubeToken: token,
+            youtubeTokenExpiration: expirationTime 
+        });
+    }
+
     static async getSpotifyToken() {
-        const data = await chrome.storage.local.get('spotifyToken');
-        if (!data.spotifyToken) {
+        const data = await chrome.storage.local.get(['spotifyToken', 'spotifyTokenExpiration']);
+        if (!data.spotifyToken || Date.now() > data.spotifyTokenExpiration) {
             throw new Error('Spotify authentication required');
         }
         return data.spotifyToken;
     }
 
     static async getYoutubeToken() {
-        const data = await chrome.storage.local.get('youtubeToken');
-        if (!data.youtubeToken) {
+        const data = await chrome.storage.local.get(['youtubeToken', 'youtubeTokenExpiration']);
+        if (!data.youtubeToken || Date.now() > data.youtubeTokenExpiration) {
             throw new Error('YouTube authentication required');
         }
         return data.youtubeToken;
     }
 
-    static async setSpotifyToken(token) {
-        await chrome.storage.local.set({ spotifyToken: token });
-    }
+    static async checkAndRefreshTokens() {
+        try {
+            const data = await chrome.storage.local.get(['spotifyTokenExpiration', 'youtubeTokenExpiration']);
+            const now = Date.now();
 
-    static async setYoutubeToken(token) {
-        await chrome.storage.local.set({ youtubeToken: token });
+            if (data.spotifyTokenExpiration && now > data.spotifyTokenExpiration) {
+                chrome.runtime.sendMessage({ 
+                    action: 'requireAuth', 
+                    service: 'spotify',
+                    message: 'Spotify session expired. Please log in again.'
+                });
+            }
+
+            if (data.youtubeTokenExpiration && now > data.youtubeTokenExpiration) {
+                chrome.runtime.sendMessage({ 
+                    action: 'requireAuth', 
+                    service: 'youtube',
+                    message: 'YouTube session expired. Please log in again.'
+                });
+            }
+        } catch (error) {
+            console.error('Token refresh check failed:', error);
+        }
     }
 }
+
+// Add periodic token check (every 5 minutes)
+setInterval(() => TokenManager.checkAndRefreshTokens(), 5 * 60 * 1000);
 
 // Music service APIs
 class SpotifyAPI {
