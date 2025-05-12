@@ -90,8 +90,8 @@
 
 
 import Link from "next/link"
-import { Clipboard, ArrowRight, Share2, Zap, Globe, Clock, Github, Mail } from "lucide-react"
-import { Testimonials } from "@/components/testimonials"
+import { Clipboard, Share2, Zap, Globe, Clock, Github, Mail } from "lucide-react"
+// import { Testimonials } from "@/components/testimonials"
 import { Faq } from "@/components/faq"
 
 export default function Home() {
@@ -174,7 +174,7 @@ export default function Home() {
             className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 px-8 py-4 rounded-full transition-colors font-medium text-lg"
           >
             Get the Extension
-            <ArrowRight className="w-5 h-5" />
+            {/* <ArrowRight className="w-5 h-5" /> */}
           </Link>
 
           {/* <div className="mt-16 max-w-4xl mx-auto">
