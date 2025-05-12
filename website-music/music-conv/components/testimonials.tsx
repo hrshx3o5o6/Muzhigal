@@ -24,8 +24,8 @@ export function Testimonials() {
                 </div>
               </div>
               <p className="text-slate-300">
-                "This extension is a game-changer for sharing my music with clients who use different platforms. No more
-                awkward moments when they can't access my playlists!"
+                &ldquo;This extension is a game-changer for sharing my music with clients who use different platforms. No more
+                awkward moments when they can&apos;t access my playlists!&rdquo;
               </p>
               <div className="flex mt-4">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -60,8 +60,8 @@ export function Testimonials() {
                 </div>
               </div>
               <p className="text-slate-300">
-                "I use this daily to convert song recommendations for my podcast listeners. It's fast, accurate, and has
-                saved me hours of manual searching."
+                &ldquo;I use this daily to convert song recommendations for my podcast listeners. It&apos;s fast, accurate, and has
+                saved me hours of manual searching.&rdquo;
               </p>
               <div className="flex mt-4">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -96,8 +96,8 @@ export function Testimonials() {
                 </div>
               </div>
               <p className="text-slate-300">
-                "My friends and I use different music services, which used to be a pain when sharing songs. This
-                extension has completely solved that problem. Highly recommend!"
+                &ldquo;My friends and I use different music services, which used to be a pain when sharing songs. This
+                extension has completely solved that problem. Highly recommend!&rdquo;
               </p>
               <div className="flex mt-4">
                 {[1, 2, 3, 4, 5].map((star) => (

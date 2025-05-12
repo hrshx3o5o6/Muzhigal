@@ -1,4 +1,5 @@
-import { ArrowRight } from "lucide-react"
+// Remove or comment out this line if you're not using ArrowRight
+// import { ArrowRight } from "lucide-react"
 
 export function HowItWorks() {
   return (
