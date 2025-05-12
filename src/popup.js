@@ -16,7 +16,37 @@ const convertedLink = document.getElementById('converted-link');
 const copyButton = document.getElementById('copy-button');
 
 // State Management
-let isSpotifyConnected = false;
+let isSpotifyConnected = false;let timer;
+
+function enterConverterSection() {
+    // Logic to display the converter section
+    displayConverterSection();
+
+    // Start a timer to switch back after 1 hour
+    timer = setTimeout(switchToSetupSection, 3600000); // 1 hour in milliseconds
+}
+
+function switchToSetupSection() {
+    // Logic to switch to the setup section
+    displaySetupSection();
+
+    // Clear the timer if the user switches back manually
+    clearTimeout(timer);
+}
+
+// Example function to display the converter section
+function displayConverterSection() {
+    document.getElementById('converter-section').style.display = 'block';
+    document.getElementById('setup-section').style.display = 'none';
+}
+
+// Example function to display the setup section
+function displaySetupSection() {
+    document.getElementById('setup-section').style.display = 'block';
+    document.getElementById('converter-section').style.display = 'none';
+}
+
+// Call enterConverterSection when the user navigates to the converter section
 let isYoutubeConnected = false;
 
 // YouTube Auth
