@@ -1,215 +1,32 @@
-const SPOTIFY_API_BASE = 'https://api.spotify.com/v1';
-const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
+const ODESLI_API_BASE = 'https://api.song.link/v1-alpha.1/links';
 
-// Auth token management
-class TokenManager {
-    static async setSpotifyToken(token) {
-        const expirationTime = Date.now() + (3600 * 1000); // 1 hour from now
-        await chrome.storage.local.set({ 
-            spotifyToken: token,
-            spotifyTokenExpiration: expirationTime 
-        });
-    }
-
-    static async setYoutubeToken(token) {
-        const expirationTime = Date.now() + (3600 * 1000); // 1 hour from now
-        await chrome.storage.local.set({ 
-            youtubeToken: token,
-            youtubeTokenExpiration: expirationTime 
-        });
-    }
-
-    static async getSpotifyToken() {
-        const data = await chrome.storage.local.get(['spotifyToken', 'spotifyTokenExpiration']);
-        if (!data.spotifyToken || Date.now() > data.spotifyTokenExpiration) {
-            throw new Error('Spotify authentication required');
-        }
-        return data.spotifyToken;
-    }
-
-    static async getYoutubeToken() {
-        const data = await chrome.storage.local.get(['youtubeToken', 'youtubeTokenExpiration']);
-        if (!data.youtubeToken || Date.now() > data.youtubeTokenExpiration) {
-            throw new Error('YouTube authentication required');
-        }
-        return data.youtubeToken;
-    }
-
-    static async checkAndRefreshTokens() {
-        try {
-            const data = await chrome.storage.local.get(['spotifyTokenExpiration', 'youtubeTokenExpiration']);
-            const now = Date.now();
-
-            if (data.spotifyTokenExpiration && now > data.spotifyTokenExpiration) {
-                chrome.runtime.sendMessage({ 
-                    action: 'requireAuth', 
-                    service: 'spotify',
-                    message: 'Spotify session expired. Please log in again.'
-                });
-            }
-
-            if (data.youtubeTokenExpiration && now > data.youtubeTokenExpiration) {
-                chrome.runtime.sendMessage({ 
-                    action: 'requireAuth', 
-                    service: 'youtube',
-                    message: 'YouTube session expired. Please log in again.'
-                });
-            }
-        } catch (error) {
-            console.error('Token refresh check failed:', error);
-        }
-    }
-}
-
-// Add periodic token check (every 5 minutes)
-setInterval(() => TokenManager.checkAndRefreshTokens(), 5 * 60 * 1000);
-
-// Music service APIs
-class SpotifyAPI {
-    static async getTrackInfo(trackId) {
-        try {
-            const token = await TokenManager.getSpotifyToken();
-            console.log('Making Spotify API request for track:', trackId);
-            
-            const response = await fetch(`${SPOTIFY_API_BASE}/tracks/${trackId}`, {
-                headers: { 
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error('Spotify API error:', {
-                    status: response.status,
-                    statusText: response.statusText,
-                    error: errorData
-                });
-                throw new Error(`Spotify API error: ${response.status} ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            console.log('Spotify track data:', data);
-            return data;
-        } catch (error) {
-            console.error('Failed to fetch track from Spotify:', error);
-            throw new Error('Failed to fetch track from Spotify: ' + error.message);
-        }
-    }
-
-    static async searchTrack(query) {
-        const token = await TokenManager.getSpotifyToken();
-        const response = await fetch(
-            `${SPOTIFY_API_BASE}/search?q=${encodeURIComponent(query)}&type=track&limit=1`,
-            { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-
-        if (!response.ok) {
-            throw new Error('Failed to search on Spotify');
-        }
-
-        const data = await response.json();
-        if (!data.tracks?.items?.length) {
-            throw new Error('No matching track found on Spotify');
-        }
-
-        return data.tracks.items[0];
-    }
-}
-
-class YouTubeAPI {
-    static async searchVideo(query) {
-        const token = await TokenManager.getYoutubeToken();
-        const response = await fetch(
-            `${YOUTUBE_API_BASE}/search?part=snippet&q=${encodeURIComponent(query)}&type=video`,
-            { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-
-        if (!response.ok) {
-            throw new Error('Failed to search on YouTube');
-        }
-
-        const data = await response.json();
-        if (!data.items?.length) {
-            throw new Error('No matching video found on YouTube');
-        }
-
-        return data.items[0];
-    }
-
-    static async getVideoInfo(videoId) {
-        const token = await TokenManager.getYoutubeToken();
-        const response = await fetch(
-            `${YOUTUBE_API_BASE}/videos?part=snippet&id=${videoId}`,
-            { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch video info from YouTube');
-        }
-
-        const data = await response.json();
-        if (!data.items?.[0]) {
-            throw new Error('Video not found on YouTube');
-        }
-
-        return data.items[0];
-    }
-}
-
-// Link conversion logic
 class MusicLinkConverter {
-    static extractSpotifyTrackId(spotifyUrl) {
+    static async convertLink(url) {
         try {
-            const url = new URL(spotifyUrl);
-            const path = url.pathname;
-            
-            // Handle different Spotify URL formats
-            if (path.includes('/track/')) {
-                const matches = path.match(/\/track\/([a-zA-Z0-9]+)/);
-                if (matches && matches[1]) {
-                    return matches[1];
-                }
-            }
-            
-            throw new Error('Invalid Spotify track URL');
-        } catch (error) {
-            console.error('Failed to parse Spotify URL:', error);
-            throw new Error('Please provide a valid Spotify track URL');
-        }
-    }
+            console.log('Converting URL:', url);
 
-    static async spotifyToYoutube(spotifyUrl) {
-        try {
-            console.log('Converting Spotify URL:', spotifyUrl);
-            const trackId = this.extractSpotifyTrackId(spotifyUrl);
-            console.log('Extracted track ID:', trackId);
+            // 1. Fetch data from Odesli
+            const response = await fetch(`${ODESLI_API_BASE}?url=${encodeURIComponent(url)}`);
 
-            const trackInfo = await SpotifyAPI.getTrackInfo(trackId);
-            const searchQuery = `${trackInfo.name} ${trackInfo.artists[0].name}`;
-            console.log('Searching YouTube for:', searchQuery);
-            
-            const video = await YouTubeAPI.searchVideo(searchQuery);
-            return `https://music.youtube.com/watch?v=${video.id.videoId}`;
-        } catch (error) {
-            console.error('Spotify to YouTube conversion error:', error);
-            throw error;
-        }
-    }
-
-    static async youtubeToSpotify(youtubeUrl) {
-        try {
-            const videoId = new URL(youtubeUrl).searchParams.get('v');
-            if (!videoId) {
-                throw new Error('Invalid YouTube URL');
+            if (!response.ok) {
+                throw new Error('Failed to fetch music data');
             }
 
-            const videoInfo = await YouTubeAPI.getVideoInfo(videoId);
-            const track = await SpotifyAPI.searchTrack(videoInfo.snippet.title);
+            const data = await response.json();
 
-            return track.external_urls.spotify;
+            // 2. Determine target platform based on input URL
+            const isSpotify = url.includes('spotify.com');
+            const targetPlatform = isSpotify ? 'youtubeMusic' : 'spotify';
+
+            // 3. Extract target link
+            const linksByPlatform = data.linksByPlatform;
+            if (!linksByPlatform || !linksByPlatform[targetPlatform]) {
+                throw new Error(`Could not find a match on ${isSpotify ? 'YouTube Music' : 'Spotify'}`);
+            }
+
+            return linksByPlatform[targetPlatform].url;
         } catch (error) {
-            console.error('YouTube to Spotify conversion error:', error);
+            console.error('Conversion error:', error);
             throw error;
         }
     }
@@ -220,35 +37,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'convertLink') {
         (async () => {
             try {
-                // Don't convert URL to lowercase
-                const url = request.url;
-                let convertedUrl;
-
-                if (url.toLowerCase().includes('spotify.com')) {
-                    convertedUrl = await MusicLinkConverter.spotifyToYoutube(url);
-                } else if (url.toLowerCase().includes('youtube.com') || url.toLowerCase().includes('youtu.be')) {
-                    convertedUrl = await MusicLinkConverter.youtubeToSpotify(url);
-                } else {
-                    throw new Error('Invalid URL. Please provide a Spotify or YouTube Music link.');
-                }
-
+                const convertedUrl = await MusicLinkConverter.convertLink(request.url);
                 sendResponse({ success: true, url: convertedUrl });
-            } catch (error) {
-                sendResponse({ success: false, error: error.message });
-            }
-        })();
-        return true;
-    }
-
-    if (request.action === 'setApiKey') {
-        (async () => {
-            try {
-                if (request.service === 'spotify') {
-                    await TokenManager.setSpotifyToken(request.token);
-                } else if (request.service === 'youtube') {
-                    await TokenManager.setYoutubeToken(request.token);
-                }
-                sendResponse({ success: true });
             } catch (error) {
                 sendResponse({ success: false, error: error.message });
             }

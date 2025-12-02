@@ -5,17 +5,11 @@
     "description": "Convert music links between Spotify and YouTube Music",
     "permissions": [
         "storage",
-        "identity",
         "clipboardWrite",
         "activeTab"
     ],
     "host_permissions": [
-        "https://accounts.spotify.com/*",
-        "https://api.spotify.com/*",
-        "https://accounts.google.com/*",
-        "https://www.googleapis.com/*",
-        "https://music.youtube.com/*",
-        "https://open.spotify.com/*"
+        "https://api.song.link/*"
     ],
     "action": {
         "default_popup": "popup.html",
@@ -28,13 +22,6 @@
     "background": {
         "service_worker": "background.js",
         "type": "module"
-    },
-    "oauth2": {
-        "client_id": "67dab6c61a8740fab3d446243cd3b8b5",
-        "scopes": [
-            "playlist-read-private",
-            "user-library-read"
-        ]
     },
     "content_security_policy": {
         "extension_pages": "script-src 'self'; object-src 'self'"
