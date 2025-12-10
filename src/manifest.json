@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Musically: Send Music That Works – Anywhere, Any Platform, Any Time.",
+    "name": "Muzhigal",
     "version": "1.0",
     "description": "Convert music links between Spotify and YouTube Music",
     "permissions": [
