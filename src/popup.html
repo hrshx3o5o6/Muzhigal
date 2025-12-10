@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Music Link Converter</title>
     <link href="styles.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -11,28 +13,7 @@
             <p class="subtitle">Convert between Spotify and YouTube Music</p>
         </div>
 
-        <div class="setup-section" id="setup-section">
-            <div class="api-key-section">
-                <h2>Setup</h2>
-                <div class="service-group">
-                    <div class="service-header">
-                        <h3>Spotify</h3>
-                        <span class="status-indicator" id="spotify-status"></span>
-                    </div>
-                    <button id="spotify-connect" class="primary-button">Connect Spotify</button>
-                </div>
-                
-                <div class="service-group">
-                    <div class="service-header">
-                        <h3>YouTube</h3>
-                        <span class="status-indicator" id="youtube-status"></span>
-                    </div>
-                    <button id="youtube-connect" class="primary-button">Connect YouTube</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="converter-section" id="converter-section">
+        <div class="converter-section" id="converter-section" style="display: block;">
             <div class="input-group">
                 <label for="song-link">Music Link</label>
                 <input type="url" id="song-link" placeholder="Paste Spotify or YouTube Music link here">
@@ -46,8 +27,9 @@
                         <p id="converted-link" class="placeholder">Your converted link will appear here</p>
                         <button id="copy-button" class="icon-button" title="Copy to clipboard">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
-                                <path fill="none" d="M0 0h24v24H0z"/>
-                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                <path fill="none" d="M0 0h24v24H0z" />
+                                <path
+                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
                             </svg>
                         </button>
                     </div>
@@ -61,4 +43,5 @@
     </div>
     <script src="popup.js" type="module"></script>
 </body>
+
 </html>
