@@ -4,9 +4,7 @@
     "version": "1.0",
     "description": "Convert music links between Spotify and YouTube Music",
     "permissions": [
-        "storage",
-        "clipboardWrite",
-        "activeTab"
+        "clipboardWrite"
     ],
     "host_permissions": [
         "https://api.song.link/*"
